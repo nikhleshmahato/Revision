@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // ✅ Firebase Config
+    const firebaseConfig = {
+  apiKey: "AIzaSyAZtEzKWuawvhbvBsjvfhYf-HNkOshOYhE",
+  authDomain: "revision-8bf0f.firebaseapp.com",
+  projectId: "revision-8bf0f",
+  storageBucket: "revision-8bf0f.firebasestorage.app",
+  messagingSenderId: "508252415413",
+  appId: "1:508252415413:web:16bfb542fd48a8ee8f25fc"
+};
+
+    // ✅ Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ✅ Admin Emails Only
+    const adminEmails = ["nikku@norest.com", "you@example.com"];
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const email = document.getElementById("email");
+      const password = document.getElementById("password");
+
+      document.getElementById("loginBtn").addEventListener("click", () => {
+        const emailVal = email.value.trim().toLowerCase();
+
+        if (!adminEmails.includes(emailVal)) {
+          alert("Access denied: Only admin can login.");
+          return;
+        }
+
+        signInWithEmailAndPassword(auth, emailVal, password.value)
+          .then(() => {
+            // ✅ Redirect on success
+            window.location.href = "home.html";
+          })
+          .catch(() => {
+            // ❌ Show dialog on failure
+            alert("Login failed! Please check your credentials.");
+          });
+      });
+
+      // Optional: debug auth state
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          console.log("Logged in:", user.email);
+        }
+      });
+    });
+  </script>
+
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    input { padding: 8px; margin: 6px 0; width: 250px; }
+    button { padding: 8px 12px; margin-top: 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>🔐 Admin Login</h2>
+  <input type="email" id="email" placeholder="Admin Email" /><br>
+  <input type="password" id="password" placeholder="Password" /><br>
+  <button id="loginBtn">Login</button>
+</body>
+</html>
